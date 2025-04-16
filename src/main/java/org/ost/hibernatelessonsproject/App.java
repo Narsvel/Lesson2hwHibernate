@@ -4,6 +4,8 @@ import org.ost.hibernatelessonsproject.dao.UserDAO;
 import org.ost.hibernatelessonsproject.models.User;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class App {
 
@@ -22,6 +24,7 @@ public class App {
     {
         Scanner scanner = new Scanner(System.in);
 
+        //цикл работы CRUD программы
         while (exit) {
             System.out.println(FIRST_MESSAGE);
             String command = scanner.next();
@@ -40,7 +43,7 @@ public class App {
                 case "exit": exit = false;
                     break;
                 default:
-                    System.out.println("Введена не корректная команда!");
+                    System.out.println("Введена не корректная команда! \n");
             }
         }
     }
@@ -51,10 +54,12 @@ public class App {
         System.out.println("Введите email пользователя:");
         String email = scanner.next();
         System.out.println("Введите возраст пользователя:");
-        int age = scanner.nextInt();
-        boolean create = userDAO.create(name, email, age);
-        if (create)
-            System.out.println("Пользователь добавлен в базу данных \n");
+        String age = scanner.next();
+        if (dataVerification(name, email, age)) { //если данные корректны
+            boolean create = userDAO.create(name, email, Integer.parseInt(age));
+            if (create)
+                System.out.println("Пользователь добавлен в базу данных. \n");
+        } else create(scanner);
     }
 
     private static void readAll() {
@@ -78,10 +83,12 @@ public class App {
         System.out.println("Введите email пользователя:");
         String email = scanner.next();
         System.out.println("Введите возраст пользователя:");
-        int age = scanner.nextInt();
-        User user = userDAO.update(id, name, email, age);
-        if (user != null)
-            System.out.println("Измененный пользователь: " + user);
+        String age = scanner.next();
+        if (dataVerification(name, email, age)) { //если данные корректны
+            User user = userDAO.update(id, name, email, Integer.parseInt(age));
+            if (user != null)
+                System.out.println("Измененный пользователь: " + user);
+        } else update(scanner);
     }
 
     private static void delete(Scanner scanner) {
@@ -90,6 +97,37 @@ public class App {
         User user = userDAO.delete(id);
         if (user != null)
             System.out.println("Был удален пользователь: " + user);
+    }
+
+    //метод для проверки корректности введенных данных пользователя
+    private static boolean dataVerification(String name, String email, String age) {
+
+        if (name.length() > 100) {
+            System.out.println("Имя ползователя должно быть не более 100 символов. \n");
+            return false;
+        }
+
+        Pattern pattern = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        if (!matcher.matches()) {
+            System.out.println("Email должен быть формата: " +
+                    "(локальная часть адреса электронной почты)@(имя домена).(домен верхнего уровня) \n" +
+                    "Например: User@mail.com \n");
+            return false;
+        }
+
+        try {
+            int i = Integer.parseInt(age);
+            if (!(i > -1 && i < 150)) {
+                System.out.println("Возраст пользователя должен быть между 0 и 150 лет. \n");
+                return false;
+            }
+        } catch(NumberFormatException e){
+            System.out.println("Введите возраст пользователя цифрами. \n");
+            return false;
+        }
+
+        return true;
     }
 
 }
