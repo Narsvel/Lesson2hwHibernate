@@ -6,7 +6,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.DataException;
-import org.hibernate.service.spi.ServiceException;
 import org.ost.hibernatelessonsproject.models.User;
 
 import java.util.List;
@@ -18,13 +17,13 @@ public class UserDAO {
         try {
             Configuration configuration = new Configuration().addAnnotatedClass(User.class);
             sessionFactory = configuration.buildSessionFactory();
-        } catch (ServiceException exception) {
+        } catch (Throwable exception) {
             System.out.println("Ошибка подключения к базе данных.");
         }
         return sessionFactory;
     }
 
-    public void create(String name, String email, int age){
+    public boolean create(String name, String email, int age){
         SessionFactory sessionFactory = createSessionFactory();
         if (sessionFactory != null) {
             try(sessionFactory) {
@@ -33,12 +32,31 @@ public class UserDAO {
                 User user = new User(name, email, age);
                 session.save(user);
                 session.getTransaction().commit();
+                return true;
             } catch (ConstraintViolationException exception) {
                 System.out.println("Возраст пользователя должен быть между 0 и 150 лет.");
             } catch (DataException exception) {
                 System.out.println("Имя ползователя должно быть не более 100 символов.");
             }
         }
+        return false;
+    }
+
+    public User read(int id) {
+        SessionFactory sessionFactory = createSessionFactory();
+        User user = null;
+        if (sessionFactory != null) {
+            try(sessionFactory) {
+                Session session = sessionFactory.getCurrentSession();
+                session.beginTransaction();
+                user = session.get(User.class, id);
+                session.getTransaction().commit();
+            }
+        }
+        if (user == null && sessionFactory != null) {
+            System.out.println("Пользователя с этим id нет в базе данных. \n");
+        }
+        return user;
     }
 
     public List<User> readAll() {
@@ -71,8 +89,8 @@ public class UserDAO {
                 session.getTransaction().commit();
             }
         }
-        if (user == null) {
-            System.out.println("Пользователя с этим id нет в базе данных.");
+        if (user == null && sessionFactory != null) {
+            System.out.println("Пользователя с этим id нет в базе данных. \n");
         }
         return user;
     }
@@ -90,8 +108,8 @@ public class UserDAO {
                 session.getTransaction().commit();
             }
         }
-        if (user == null) {
-            System.out.println("Пользователя с этим id нет в базе данных.");
+        if (user == null  && sessionFactory != null) {
+            System.out.println("Пользователя с этим id нет в базе данных. \n");
         }
         return user;
     }
