@@ -17,10 +17,10 @@ public class App
         List<User> users = userDAO.readAll();
         System.out.println( users );
 
-        User user = userDAO.update(3, "Tom", "Tom@mail.ru", 29);
+        User user = userDAO.update(1, "Tom", "Tom@mail.ru", 29);
         System.out.println( user );
 
-        User user2 = userDAO.delete(8);
+        User user2 = userDAO.delete(1);
         System.out.println( user2 );
     }
 }

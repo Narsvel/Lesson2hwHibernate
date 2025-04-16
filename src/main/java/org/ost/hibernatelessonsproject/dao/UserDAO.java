@@ -57,38 +57,43 @@ public class UserDAO {
 
     public User update(int id, String name, String email, int age) {
         SessionFactory sessionFactory = createSessionFactory();
+        User user = null;
         if (sessionFactory != null) {
             try(sessionFactory) {
                 Session session = sessionFactory.getCurrentSession();
                 session.beginTransaction();
-                User user = session.get(User.class, id);
-                user.setName(name);
-                user.setEmail(email);
-                user.setAge(age);
+                user = session.get(User.class, id);
+                if (user != null) {
+                    user.setName(name);
+                    user.setEmail(email);
+                    user.setAge(age);
+                }
                 session.getTransaction().commit();
-                return user;
-            } catch (NullPointerException exception) {
-                System.out.println("Пользователя с этим id нет в базе данных.");
             }
         }
-        return null;
+        if (user == null) {
+            System.out.println("Пользователя с этим id нет в базе данных.");
+        }
+        return user;
     }
 
     public User delete(int id) {
         SessionFactory sessionFactory = createSessionFactory();
+        User user = null;
         if (sessionFactory != null) {
             try(sessionFactory) {
                 Session session = sessionFactory.getCurrentSession();
                 session.beginTransaction();
-                User user = session.get(User.class, id);
-                session.delete(user);
+                user = session.get(User.class, id);
+                if (user != null)
+                    session.delete(user);
                 session.getTransaction().commit();
-                return user;
-            } catch (IllegalArgumentException exception) {
-                System.out.println("Пользователя с этим id нет в базе данных.");
             }
         }
-        return null;
+        if (user == null) {
+            System.out.println("Пользователя с этим id нет в базе данных.");
+        }
+        return user;
     }
 
 
