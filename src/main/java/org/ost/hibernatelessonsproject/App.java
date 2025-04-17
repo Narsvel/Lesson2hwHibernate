@@ -14,7 +14,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class App {
-    private static final Logger logger = Logger.getLogger(App.class.getName());
+    //использую один логер для классов App и UserDAO (чтобы сохранять все логи в один файл)
+    private static final Logger logger = Logger.getGlobal();
 
     private static final String FIRST_MESSAGE = "Введите одну из команд: \n" +
             "create - создать пользователя \n" +

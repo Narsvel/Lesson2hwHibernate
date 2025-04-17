@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 public class UserDAO {
 
-    private static final Logger logger = Logger.getLogger(UserDAO.class.getName());
+    private static final Logger logger = Logger.getGlobal();
 
     //метод предоставляет SessionFactory и обрабатывает ошибки связанные с подключением к бд
     private SessionFactory createSessionFactory() {
