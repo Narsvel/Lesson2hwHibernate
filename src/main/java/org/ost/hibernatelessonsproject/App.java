@@ -69,34 +69,43 @@ public class App {
 
     private static void read(Scanner scanner) {
         System.out.println("Введите id пользователя:");
-        int id = scanner.nextInt();
-        User user = userDAO.read(id);
-        if (user != null)
-            System.out.println("Данные пользователя: " + user);
+        String idUser = scanner.next();
+        if (idVerification(idUser)) { //проверка id
+            int id = Integer.parseInt(idUser);
+            User user = userDAO.read(id);
+            if (user != null)
+                System.out.println("Данные пользователя: " + user);
+        } else read(scanner);
     }
 
     private static void update(Scanner scanner) {
         System.out.println("Введите id пользователя:");
-        int id = scanner.nextInt();
-        System.out.println("Введите имя пользователя:");
-        String name = scanner.next();
-        System.out.println("Введите email пользователя:");
-        String email = scanner.next();
-        System.out.println("Введите возраст пользователя:");
-        String age = scanner.next();
-        if (dataVerification(name, email, age)) { //если данные корректны
-            User user = userDAO.update(id, name, email, Integer.parseInt(age));
-            if (user != null)
-                System.out.println("Измененный пользователь: " + user);
+        String idUser = scanner.next();
+        if (idVerification(idUser)) { //проверка id
+            int id = Integer.parseInt(idUser);
+            System.out.println("Введите имя пользователя:");
+            String name = scanner.next();
+            System.out.println("Введите email пользователя:");
+            String email = scanner.next();
+            System.out.println("Введите возраст пользователя:");
+            String age = scanner.next();
+            if (dataVerification(name, email, age)) { //если данные корректны
+                User user = userDAO.update(id, name, email, Integer.parseInt(age));
+                if (user != null)
+                    System.out.println("Измененный пользователь: " + user);
+            } else update(scanner);
         } else update(scanner);
     }
 
     private static void delete(Scanner scanner) {
         System.out.println("Введите id пользователя:");
-        int id = scanner.nextInt();
-        User user = userDAO.delete(id);
-        if (user != null)
-            System.out.println("Был удален пользователь: " + user);
+        String idUser = scanner.next();
+        if (idVerification(idUser)) { //проверка id
+            int id = Integer.parseInt(idUser);
+            User user = userDAO.delete(id);
+            if (user != null)
+                System.out.println("Был удален пользователь: " + user);
+        } else delete(scanner);
     }
 
     //метод для проверки корректности введенных данных пользователя
@@ -128,6 +137,17 @@ public class App {
         }
 
         return true;
+    }
+
+    //проверка id
+    private static boolean idVerification(String id) {
+        try {
+            Integer.parseInt(id);
+            return true;
+        } catch(NumberFormatException e){
+            System.out.println("Введите id пользователя цифрами. \n");
+            return false;
+        }
     }
 
 }

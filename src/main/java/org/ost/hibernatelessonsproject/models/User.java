@@ -6,11 +6,11 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity  //сущность
-@Table(name = "Users")
+@Table(name = "Users") //указываем соостветствие класса и таблици
 public class User {
 
     @Id //указыаем что это поле особенное, оно соответствует первичному ключу PRIMARY KEY
-    @Column(name = "id")
+    @Column(name = "id") //указываем соостветствие поля и колонке в таблице
     @GeneratedValue(strategy = GenerationType.IDENTITY) //указываем что поле генерируется автоматически бд
     private int id;
 
@@ -23,12 +23,12 @@ public class User {
     @Column(name = "age")
     private int age;
 
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
+    @CreationTimestamp //данное поле временная метка, будет сохранена на текущее время JVM один раз при сохнанении объекта
+    @Temporal(TemporalType.TIMESTAMP) //указываем формат временной метки в postgreSQl (Map as java.sql.Timestamp)
     @Column(name = "created_at")
     private Date createAt;
 
-    public User() {}
+    public User() {} //пустой конструктор необходим для работы Hibernate @Entity
 
     public User(String name, String email, int age) {
         this.name = name;

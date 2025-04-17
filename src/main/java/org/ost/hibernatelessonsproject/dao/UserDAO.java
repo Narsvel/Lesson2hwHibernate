@@ -12,6 +12,7 @@ import java.util.List;
 
 public class UserDAO {
 
+    //метод предоставляет SessionFactory и обрабатывает ошибки связанные с подключением к бд
     private SessionFactory createSessionFactory() {
         SessionFactory sessionFactory = null;
         try {
@@ -23,25 +24,25 @@ public class UserDAO {
         return sessionFactory;
     }
 
+    //метод сохранения объекта в бд, возвращает true если объект был сохранен в бд
     public boolean create(String name, String email, int age){
         SessionFactory sessionFactory = createSessionFactory();
-        if (sessionFactory != null) {
+        if (sessionFactory != null) {  //если нет проблем с соединением с бд
             try(sessionFactory) {
                 Session session = sessionFactory.getCurrentSession();
-                session.beginTransaction();
+                session.beginTransaction();                //начало транзакции
                 User user = new User(name, email, age);
                 session.save(user);
-                session.getTransaction().commit();
+                session.getTransaction().commit();         //завершение транзакции
                 return true;
-            } catch (ConstraintViolationException exception) {
-                System.out.println("Возраст пользователя должен быть между 0 и 150 лет.");
-            } catch (DataException exception) {
-                System.out.println("Имя ползователя должно быть не более 100 символов.");
+            } catch (ConstraintViolationException | DataException exception) {
+                System.out.println("Введены не корректные данные пользователя.");
             }
         }
         return false;
     }
 
+    //метод возвращает по id объект из бд
     public User read(int id) {
         SessionFactory sessionFactory = createSessionFactory();
         User user = null;
@@ -53,18 +54,20 @@ public class UserDAO {
                 session.getTransaction().commit();
             }
         }
-        if (user == null && sessionFactory != null) {
+        if (user == null && sessionFactory != null) { //если было устновлено соединение с бд, но поьзователь не был получен
             System.out.println("Пользователя с этим id нет в базе данных. \n");
         }
         return user;
     }
 
+    //метод возвращает все объекты которые есть в бд
     public List<User> readAll() {
         SessionFactory sessionFactory = createSessionFactory();
         if (sessionFactory != null) {
             try(sessionFactory) {
                 Session session = sessionFactory.getCurrentSession();
                 session.beginTransaction();
+                //HQL запрос всех строк из таблици
                 List<User> users = session.createQuery("select u from User u", User.class).getResultList();
                 session.getTransaction().commit();
                 return users;
@@ -73,6 +76,7 @@ public class UserDAO {
         return null;
     }
 
+    //метод обновляет данные объекта в бд по id, возвращает обновленного пользователя
     public User update(int id, String name, String email, int age) {
         SessionFactory sessionFactory = createSessionFactory();
         User user = null;
@@ -87,6 +91,8 @@ public class UserDAO {
                     user.setAge(age);
                 }
                 session.getTransaction().commit();
+            } catch (ConstraintViolationException | DataException exception) {
+                System.out.println("Введены не корректные данные пользователя.");
             }
         }
         if (user == null && sessionFactory != null) {
@@ -95,6 +101,7 @@ public class UserDAO {
         return user;
     }
 
+    //метод удаляет данные объекта в бд по id, возвращает данные удаленного пользователя
     public User delete(int id) {
         SessionFactory sessionFactory = createSessionFactory();
         User user = null;
