@@ -2,12 +2,19 @@ package org.ost.hibernatelessonsproject;
 
 import org.ost.hibernatelessonsproject.dao.UserDAO;
 import org.ost.hibernatelessonsproject.models.User;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class App {
+    private static final Logger logger = Logger.getLogger(App.class.getName());
 
     private static final String FIRST_MESSAGE = "Введите одну из команд: \n" +
             "create - создать пользователя \n" +
@@ -22,6 +29,16 @@ public class App {
 
     public static void main( String[] args )
     {
+
+        try {
+            //файл для сохранения логов
+            Handler fileHandler = new FileHandler("D:\\MyIntelliJIDEA\\Lesson2hwHibernate\\myLog.log");
+            logger.addHandler(fileHandler); //добавляем файл в логгер
+            logger.setUseParentHandlers(false); //отключаем вывод логов в консоль
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Exception: ", e);
+        }
+
         Scanner scanner = new Scanner(System.in);
 
         //цикл работы CRUD программы
@@ -113,6 +130,7 @@ public class App {
 
         if (name.length() > 100) {
             System.out.println("Имя ползователя должно быть не более 100 символов. \n");
+            logger.log(Level.INFO, "Не корректное имя пользователя");
             return false;
         }
 
@@ -122,6 +140,7 @@ public class App {
             System.out.println("Email должен быть формата: " +
                     "(локальная часть адреса электронной почты)@(имя домена).(домен верхнего уровня) \n" +
                     "Например: User@mail.com \n");
+            logger.log(Level.INFO, "Не корректный email пользователя");
             return false;
         }
 
@@ -129,10 +148,12 @@ public class App {
             int i = Integer.parseInt(age);
             if (!(i > -1 && i < 150)) {
                 System.out.println("Возраст пользователя должен быть между 0 и 150 лет. \n");
+                logger.log(Level.INFO, "Не корректный возраст пользователя");
                 return false;
             }
         } catch(NumberFormatException e){
             System.out.println("Введите возраст пользователя цифрами. \n");
+            logger.log(Level.INFO, "Не корректный id пользователя");
             return false;
         }
 
@@ -146,6 +167,7 @@ public class App {
             return true;
         } catch(NumberFormatException e){
             System.out.println("Введите id пользователя цифрами. \n");
+            logger.log(Level.INFO, "Не корректный id пользователя");
             return false;
         }
     }
