@@ -1,6 +1,7 @@
 package org.ost.hibernatelessonsproject.dao;
 
 
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -9,8 +10,13 @@ import org.hibernate.exception.DataException;
 import org.ost.hibernatelessonsproject.models.User;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 public class UserDAO {
+
+    private static final Logger logger = Logger.getLogger(UserDAO.class.getName());
 
     //метод предоставляет SessionFactory и обрабатывает ошибки связанные с подключением к бд
     private SessionFactory createSessionFactory() {
@@ -20,6 +26,7 @@ public class UserDAO {
             sessionFactory = configuration.buildSessionFactory();
         } catch (Throwable exception) {
             System.out.println("Ошибка подключения к базе данных.");
+            logger.log(Level.SEVERE, "Exception: ", exception);
         }
         return sessionFactory;
     }
@@ -37,6 +44,7 @@ public class UserDAO {
                 return true;
             } catch (ConstraintViolationException | DataException exception) {
                 System.out.println("Введены не корректные данные пользователя.");
+                logger.log(Level.WARNING, "Exception: ", exception);
             }
         }
         return false;
@@ -93,6 +101,7 @@ public class UserDAO {
                 session.getTransaction().commit();
             } catch (ConstraintViolationException | DataException exception) {
                 System.out.println("Введены не корректные данные пользователя.");
+                logger.log(Level.WARNING, "Exception: ", exception);
             }
         }
         if (user == null && sessionFactory != null) {

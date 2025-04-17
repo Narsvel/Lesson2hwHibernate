@@ -1,4 +1,5 @@
 target/
+myLog.log
 src/main/resources/hibernate.properties
 src/main/resources/sql-request.original
 !.mvn/wrapper/maven-wrapper.jar
