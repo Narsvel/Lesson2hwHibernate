@@ -1,7 +1,5 @@
 package org.ost.hibernatelessonsproject.dao;
 
-
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -13,9 +11,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 public class UserDAO {
-
+    //использую один логер для классов App и UserDAO (чтобы сохранять все логи в один файл)
     private static final Logger logger = Logger.getGlobal();
 
     //метод предоставляет SessionFactory и обрабатывает ошибки связанные с подключением к бд
