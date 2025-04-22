@@ -33,7 +33,7 @@ public class App {
 
         try {
             //файл для сохранения логов
-            Handler fileHandler = new FileHandler("C:\\MyIntelliJIDEA\\Lesson3hwTests\\myLog.log");
+            Handler fileHandler = new FileHandler("D:\\MyIntelliJIDEA\\Lesson2hwHibernate\\myLog.log");
             logger.addHandler(fileHandler); //добавляем файл в логгер
             logger.setUseParentHandlers(false); //отключаем вывод логов в консоль
         } catch (IOException e) {
